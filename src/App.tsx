@@ -48,10 +48,11 @@ const browserRouter = createBrowserRouter([
     element: <MainRoute />,
     children: [
       {
-        path: "register",
+        path: Register.path,
+        action: Register.action,
         element: <Register />,
       },
-      { path: "chat", element: <Chatroom /> },
+      { path: Chatroom.path, element: <Chatroom />, loader: Chatroom.loader },
     ],
   },
 ]);

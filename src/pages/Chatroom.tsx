@@ -1,9 +1,10 @@
-import { FunctionComponent } from "react";
 import { Box } from "@mui/material";
 import { Sidebar } from "../components/Sidebar/Sidebar.tsx";
 import { ChatContainer } from "../components/Chat/ChatContainer.tsx";
+import { Page } from "../models/page.ts";
+import { getUsers } from "../api/user.ts";
 
-export const Chatroom: FunctionComponent = () => {
+export const Chatroom: Page = () => {
   return (
     <Box
       sx={{
@@ -16,4 +17,12 @@ export const Chatroom: FunctionComponent = () => {
       <ChatContainer />
     </Box>
   );
+};
+
+Chatroom.path = "chat";
+
+Chatroom.loader = async () => {
+  const [users] = await getUsers();
+
+  return users || [];
 };
