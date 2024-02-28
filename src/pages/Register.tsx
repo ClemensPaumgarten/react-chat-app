@@ -1,84 +1,62 @@
+import { useRef } from "react";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { Page } from "../models/page.ts";
-import { Form, useActionData, useNavigate } from "react-router-dom";
 import { postRegister } from "../api/user.ts";
-import { isOfTypeUser, User } from "../models/user.ts";
-import { isOfTypeError } from "../models/error.ts";
-import { useEffect } from "react";
-import { ChatPage } from "./ChatPage.tsx";
 import { useUserStore } from "../store/userStore.tsx";
-import { setUserToLocalStorage } from "../storage/user.ts";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 export const Register: Page = () => {
-  const data = useActionData();
-  const isError = isOfTypeError(data);
-  const navigate = useNavigate();
+  const inputElement = useRef<HTMLInputElement>(null);
   const { setUser } = useUserStore();
+  const navigate = useNavigate();
+  const mutation = useMutation({
+    mutationFn: postRegister,
+    onSuccess: (data) => {
+      if (data) {
+        setUser(data);
+        navigate("/chat");
+        localStorage.setItem("user", JSON.stringify(data));
+      }
+    },
+  });
 
-  useEffect(() => {
-    if (isOfTypeUser(data)) {
-      setUser(data);
-      navigate(ChatPage.path);
+  const onClick = () => {
+    if (inputElement.current?.value) {
+      mutation.mutate({ username: inputElement.current?.value });
     }
-  }, [data]);
+  };
 
   return (
-    <Form method="post" action="/register">
-      <Box
+    <Box
+      sx={{
+        width: "100%",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Stack
         sx={{
-          width: "100%",
-          height: "100vh",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
           alignItems: "center",
         }}
+        spacing={3}
       >
-        <Stack
-          sx={{
-            display: "flex",
-            alignItems: "center",
-          }}
-          spacing={3}
-        >
-          <Typography variant="h4" gutterBottom>
-            Chatroom Login
-          </Typography>
+        <Typography variant="h4" gutterBottom>
+          Chatroom Login
+        </Typography>
 
-          <TextField
-            error={isError}
-            label="Username"
-            name="username"
-            fullWidth
-            helperText={isError ? data.message : ""}
-          />
+        <TextField label="Username" inputRef={inputElement} fullWidth />
 
-          <Button type="submit" variant="contained" color="secondary">
-            Anmelden
-          </Button>
-        </Stack>
-      </Box>
-    </Form>
+        <Button variant="contained" color="secondary" onClick={onClick}>
+          Anmelden
+        </Button>
+      </Stack>
+    </Box>
   );
 };
 
-Register.path = "/register";
-
-Register.action = async ({ request }) => {
-  let formData = await request.formData();
-  const username = formData.get("username") as string | null;
-
-  if (username) {
-    let user: User | null = null;
-    try {
-      user = await postRegister({ username });
-      setUserToLocalStorage(user);
-    } catch (e) {
-      console.error(e);
-    }
-
-    return user;
-  } else {
-    return { message: "Username required" };
-  }
-};
+Register.path = "login";

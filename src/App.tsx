@@ -1,17 +1,22 @@
 import { ChatStoreProvider } from "./store/chatStore.tsx";
 import { UserStoreProvider } from "./store/userStore.tsx";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import { ChatRouter } from "./components/ChatRouter/ChatRouter.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ChatRouter } from "./ChatRouter.tsx";
+
+const queryClient = new QueryClient();
 
 export function App() {
   return (
     <ThemeProvider theme={createTheme()}>
       <CssBaseline />
-      <UserStoreProvider>
-        <ChatStoreProvider>
-          <ChatRouter />
-        </ChatStoreProvider>
-      </UserStoreProvider>
+      <QueryClientProvider client={queryClient}>
+        <UserStoreProvider>
+          <ChatStoreProvider>
+            <ChatRouter />
+          </ChatStoreProvider>
+        </UserStoreProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }
