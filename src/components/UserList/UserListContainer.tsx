@@ -9,7 +9,7 @@ import { useGetUsers } from "../../api/user.ts";
 
 export const UserListContainer: FunctionComponent = () => {
   const { user: storeUser, users } = useUserStore();
-  const { isFetching } = useGetUsers();
+  const { isLoading } = useGetUsers();
 
   const { mutate } = usePostChatroom();
   const activeUsers = users.filter((user) => user.id !== storeUser?.id) || [];
@@ -37,7 +37,7 @@ export const UserListContainer: FunctionComponent = () => {
         Available Users
       </Typography>
 
-      {isFetching ? (
+      {isLoading ? (
         <Box
           sx={{
             width: "100%",

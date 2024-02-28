@@ -34,7 +34,7 @@ export const UserStoreProvider: FunctionComponent<PropsWithChildren> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(initialUser);
-  const [checkedIfUserExists, setCheckedIfUserExists] = useState(false);
+  const [checkedIfUserExists, setCheckedIfUserExists] = useState(!user);
   const { data: users } = useGetUsers(5000);
   const { mutateAsync } = usePostRefresh();
 
@@ -65,6 +65,7 @@ export const UserStoreProvider: FunctionComponent<PropsWithChildren> = ({
     }
   }, []);
 
+  console.log(checkedIfUserExists);
   return (
     <UserContext.Provider
       value={{
