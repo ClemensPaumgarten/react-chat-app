@@ -1,10 +1,10 @@
 import { User } from "../models/user.ts";
 import { API_URL } from "../constants.ts";
+import { handelApiResponse } from "./index.ts";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { BackendError } from "../models/error.ts";
 
-export const postRegister = async (data: {
-  username: string;
-}): Promise<[User | null, BackendError | null]> => {
+export const postRegister = async (data: { username: string }) => {
   const response = await fetch(`${API_URL}/user/register`, {
     method: "POST",
     headers: {
@@ -13,51 +13,32 @@ export const postRegister = async (data: {
     body: JSON.stringify(data),
   });
 
-  if (response.ok) {
-    return [(await response.json()) as User, null];
-  }
-
-  if (response.status < 500) {
-    return [null, (await response.json()) as BackendError];
-  } else {
-    return [null, { status: 500, message: "Server error" }];
-  }
+  return handelApiResponse<User>(response);
 };
 
-export const postRefresh = async (
-  loggedInUser: string,
-): Promise<[User | null, BackendError | null]> => {
-  const response = await fetch(`${API_URL}/user/refresh`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+export const usePostRefresh = () =>
+  useMutation<User, BackendError, string>({
+    mutationFn: async (loggedInUser: string) => {
+      const response = await fetch(`${API_URL}/user/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: loggedInUser }),
+      });
+
+      return handelApiResponse<User>(response);
     },
-    body: JSON.stringify({ id: loggedInUser }),
   });
 
-  if (response.ok) {
-    return [(await response.json()) as User, null];
-  }
-
-  if (response.status < 500) {
-    return [null, (await response.json()) as BackendError];
-  } else {
-    return [null, { status: 500, message: "Server error" }];
-  }
-};
-
-export const getUsers = async (): Promise<
-  [User[] | null, BackendError | null]
-> => {
-  const response = await fetch(`${API_URL}/user/users`);
-
-  if (response.ok) {
-    return [(await response.json()) as User[], null];
-  }
-
-  if (response.status < 500) {
-    return [null, (await response.json()) as BackendError];
-  } else {
-    return [null, { status: 500, message: "Server error" }];
-  }
-};
+export const GET_USERS_QUERY_KEY = "GET_USERS";
+export const useGetUsers = (refetchInterval: number | false = false) =>
+  useQuery<User[]>({
+    initialData: [],
+    queryKey: [GET_USERS_QUERY_KEY],
+    queryFn: async () => {
+      const response = await fetch(`${API_URL}/user/users`);
+      return handelApiResponse<User[]>(response);
+    },
+    refetchInterval: refetchInterval,
+  });

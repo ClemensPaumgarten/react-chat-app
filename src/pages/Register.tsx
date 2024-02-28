@@ -4,25 +4,26 @@ import { Page } from "../models/page.ts";
 import { postRegister } from "../api/user.ts";
 import { useUserStore } from "../store/userStore.tsx";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 export const Register: Page = () => {
   const inputElement = useRef<HTMLInputElement>(null);
   const { setUser } = useUserStore();
   const navigate = useNavigate();
+  const mutation = useMutation({
+    mutationFn: postRegister,
+    onSuccess: (data) => {
+      if (data) {
+        setUser(data);
+        navigate("/chat");
+        localStorage.setItem("user", JSON.stringify(data));
+      }
+    },
+  });
 
   const onClick = () => {
-    if (inputElement.current) {
-      const value = inputElement.current.value;
-
-      if (value) {
-        postRegister({ username: value }).then(([user]) => {
-          if (user) {
-            setUser(user);
-
-            navigate("/chat");
-          }
-        });
-      }
+    if (inputElement.current?.value) {
+      mutation.mutate({ username: inputElement.current?.value });
     }
   };
 
@@ -59,23 +60,3 @@ export const Register: Page = () => {
 };
 
 Register.path = "login";
-
-Register.action = async ({ request }) => {
-  let formData = await request.formData();
-
-  const username = formData.get("username");
-
-  if (username) {
-    const [user, error] = await postRegister({
-      username: formData.get("username") as string,
-    });
-
-    if (error) {
-      return error;
-    } else {
-      return user;
-    }
-  }
-
-  return null;
-};

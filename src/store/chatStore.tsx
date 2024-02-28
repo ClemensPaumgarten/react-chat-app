@@ -9,11 +9,10 @@ import {
   useState,
 } from "react";
 import { useUserStore } from "./userStore.tsx";
-import { getOpenChatrooms } from "../api/chatroom.ts";
+import { useGetChatroom, useGetOpenChatrooms } from "../api/chatroom.ts";
 
 type ChatStore = {
   openChatRooms: ChatRoom[];
-  setOpenChatRooms: Dispatch<ChatRoom[]>;
 
   currentChatRoom: ChatRoom | null;
   setCurrentChatRoom: Dispatch<ChatRoom | null>;
@@ -21,7 +20,6 @@ type ChatStore = {
 
 const ChatStore = createContext<ChatStore>({
   openChatRooms: [],
-  setOpenChatRooms: () => {},
   currentChatRoom: null,
   setCurrentChatRoom: () => {},
 });
@@ -29,27 +27,22 @@ const ChatStore = createContext<ChatStore>({
 export const ChatStoreProvider: FunctionComponent<
   PropsWithChildren<unknown>
 > = ({ children }) => {
-  const [openChatRooms, setOpenChatRooms] = useState<ChatRoom[]>([]);
   const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom | null>(null);
   const { user } = useUserStore();
-
-  const fetchOpenChatroom = async () => {
-    if (user) {
-      const chatRooms = await getOpenChatrooms(user.id);
-      setOpenChatRooms(chatRooms);
-    }
-  };
+  const { data: openChatrooms } = useGetOpenChatrooms(user);
+  const { data: chatroom } = useGetChatroom(currentChatRoom?.id || null, 2000);
 
   useEffect(() => {
-    fetchOpenChatroom();
-  }, [user]);
+    if (chatroom) {
+      setCurrentChatRoom(chatroom);
+    }
+  }, [chatroom]);
 
   return (
     <ChatStore.Provider
       value={{
-        openChatRooms,
-        setOpenChatRooms,
-        currentChatRoom,
+        openChatRooms: openChatrooms || [],
+        currentChatRoom: currentChatRoom,
         setCurrentChatRoom,
       }}
     >
@@ -66,7 +59,6 @@ export const useChatStore = () => {
 
   return {
     openChatRooms: chatStore.openChatRooms,
-    setOpenChatRooms: chatStore.setOpenChatRooms,
     currentChatRoom: chatStore.currentChatRoom,
     setCurrentChatRoom: chatStore.setCurrentChatRoom,
   };
