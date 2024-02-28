@@ -7,7 +7,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useUserStore } from "../../store/userStore.tsx";
-import { deepOrange } from "@mui/material/colors";
+import { teal, grey } from "@mui/material/colors";
 
 type ChatRoomEntryProps = {
   chatRoom: ChatRoom;
@@ -20,21 +20,22 @@ export const ChatroomListEntry: FunctionComponent<ChatRoomEntryProps> = ({
   onChatRoomClick,
   isSelected,
 }) => {
-  const [loggedInUser] = useUserStore();
+  const { user } = useUserStore();
 
-  const users = chatRoom.users.filter((user) => user.id !== loggedInUser?.id);
+  const users = chatRoom.users.filter((u) => u.id !== user?.id);
 
   return (
     <ListItemButton
       selected={isSelected}
+      sx={{
+        borderBottom: `1px solid ${grey[300]}`,
+      }}
       onClick={() => {
         onChatRoomClick(chatRoom);
       }}
     >
       <ListItemIcon>
-        <Avatar sx={{ bgcolor: deepOrange[500] }}>
-          {users[0]?.username[0]}
-        </Avatar>
+        <Avatar sx={{ bgcolor: teal[600] }}>{users[0]?.username[0]}</Avatar>
       </ListItemIcon>
       <ListItemText>{users.map((u) => u.username).join(", ")}</ListItemText>
     </ListItemButton>

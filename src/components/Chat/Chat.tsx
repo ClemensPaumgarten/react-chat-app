@@ -8,15 +8,15 @@ import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
 
 export const Chat: FunctionComponent = () => {
   const { currentChatRoom, setCurrentChatRoom } = useChatStore();
-  const [loggedInUser] = useUserStore();
+  const { user } = useUserStore();
 
   const handleSendMessage = async (newMessage: string) => {
-    if (!currentChatRoom || !loggedInUser) return;
+    if (!currentChatRoom || !user) return;
 
     const [chatRoom] = await postMessage({
       chatRoomId: currentChatRoom.id,
       text: newMessage,
-      authorId: loggedInUser.id,
+      authorId: user.id,
     });
 
     if (chatRoom) {
@@ -48,7 +48,7 @@ export const Chat: FunctionComponent = () => {
   }, []);
 
   const recipient =
-    currentChatRoom?.users.filter((user) => user.id !== loggedInUser?.id) || [];
+    currentChatRoom?.users.filter((user) => user.id !== user?.id) || [];
 
   return (
     <Box
@@ -81,10 +81,10 @@ export const Chat: FunctionComponent = () => {
         }}
         elevation={1}
       >
-        {loggedInUser && (
+        {user && (
           <MessagesList
             messages={currentChatRoom?.messages || []}
-            loggedInUser={loggedInUser}
+            loggedInUser={user}
           />
         )}
 

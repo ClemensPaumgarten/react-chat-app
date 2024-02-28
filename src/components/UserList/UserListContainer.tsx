@@ -6,17 +6,16 @@ import { useUserStore } from "../../store/userStore.tsx";
 import { UserList } from "./UserList.tsx";
 import { useChatStore } from "../../store/chatStore.tsx";
 import { NoEntries } from "../NoEntries/NoEntries.tsx";
-import { useLoaderData } from "react-router-dom";
+import { getUsers } from "../../api/user.ts";
 
 export const UserListContainer: FunctionComponent = () => {
   const [activeUsers, setActiveUsers] = useState<User[]>([]);
-  const [loggedInUser] = useUserStore();
+  const { user: storeUser } = useUserStore();
   const { setOpenChatRooms, openChatRooms } = useChatStore();
-  const users = useLoaderData() as User[];
 
   const onOpenChatroom = async (user: User) => {
-    if (loggedInUser) {
-      const [chatroom] = await postChatroom([user.id, loggedInUser?.id]);
+    if (storeUser) {
+      const [chatroom] = await postChatroom([user.id, storeUser?.id]);
 
       if (chatroom) {
         setOpenChatRooms([chatroom, ...openChatRooms]);
@@ -25,12 +24,17 @@ export const UserListContainer: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    if (users) {
-      setActiveUsers(
-        users.filter((user) => user.id !== loggedInUser?.id) || [],
-      );
-    }
-  }, [users]);
+    getUsers().then(([users, error]) => {
+      if (error) {
+        console.error("Error getting users");
+        return;
+      }
+
+      if (users) {
+        setActiveUsers(users.filter((user) => user.id !== storeUser?.id) || []);
+      }
+    });
+  }, []);
 
   return (
     <Box

@@ -23,7 +23,11 @@ export const ChatroomList: FunctionComponent = () => {
         Open Chats
       </Typography>
 
-      <List>
+      <List
+        sx={{
+          padding: 0,
+        }}
+      >
         {openChatRooms.map((chatroom) => (
           <ChatroomListEntry
             isSelected={chatroom.id === currentChatRoom?.id}

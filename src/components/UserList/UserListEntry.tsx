@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import { FunctionComponent } from "react";
 import { User } from "../../models/user.ts";
-import { deepOrange } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 
 type UserEntryProps = {
   user: User;
@@ -19,12 +19,15 @@ export const UserListEntry: FunctionComponent<UserEntryProps> = ({
 }) => {
   return (
     <ListItemButton
+      sx={{
+        borderBottom: `1px solid ${grey[300]}`,
+      }}
       onClick={() => {
         onClick(user);
       }}
     >
       <ListItemIcon>
-        <Avatar sx={{ bgcolor: deepOrange[500] }}>{user.username[0]}</Avatar>
+        <Avatar sx={{ bgcolor: grey[400] }}>{user.username[0]}</Avatar>
       </ListItemIcon>
       <ListItemText>{user.username}</ListItemText>
     </ListItemButton>

@@ -1,16 +1,17 @@
 import { FunctionComponent } from "react";
 import { Box, Paper, Typography } from "@mui/material";
-import { useUserStore } from "../../store/userStore.tsx";
 import { ChatroomList } from "../ChatroomList/ChatroomList.tsx";
-import { UserListContainer } from "../UsersList/UserListContainer.tsx";
+import { UserListContainer } from "../UserList/UserListContainer.tsx";
+import { useUserStore } from "../../store/userStore.tsx";
 
 export const Sidebar: FunctionComponent = () => {
-  const [loggedInUser] = useUserStore();
+  const { user } = useUserStore();
   return (
     <Paper
       sx={{
         width: "450px",
-        height: "100%",
+        height: "100vh",
+        overflowY: "scroll",
       }}
     >
       <Box
@@ -28,13 +29,13 @@ export const Sidebar: FunctionComponent = () => {
           }}
           variant="h6"
         >
-          {loggedInUser?.username}
+          {user?.username}
         </Typography>
       </Box>
 
-      <UserListContainer />
-
       <ChatroomList />
+
+      <UserListContainer />
     </Paper>
   );
 };

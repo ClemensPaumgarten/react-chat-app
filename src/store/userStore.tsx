@@ -1,46 +1,54 @@
-import { User } from "../models/user.ts";
-import React, {
-  Dispatch,
+import {
+  createContext,
   FunctionComponent,
   PropsWithChildren,
+  useContext,
+  useEffect,
   useState,
 } from "react";
+import { User } from "../models/user.ts";
 
 type UserStore = {
-  loggedInUser: User | null;
-  setLoggedInUser: Dispatch<User | null>;
+  user: User | null;
+  setUser: (user: User) => void;
+
+  // Add more properties here
 };
 
-const localStorageUserData = localStorage.getItem("user");
-const localStorageUser: User = localStorageUserData
-  ? JSON.parse(localStorageUserData)
-  : null;
+const localUser = localStorage.getItem("user");
+const initialUser = localUser ? (JSON.parse(localUser) as User) : null;
 
-const UserStore = React.createContext<UserStore>({
-  loggedInUser: localStorageUser,
-  setLoggedInUser: () => {},
+const UserContext = createContext<UserStore>({
+  user: initialUser,
+  setUser: () => void 0,
 });
 
-export const UserStoreProvider: FunctionComponent<
-  PropsWithChildren<unknown>
-> = ({ children }) => {
-  const [loggedInUser, setLoggedInUser] = useState<User | null>(
-    localStorageUser,
-  );
+export const UserStoreProvider: FunctionComponent<PropsWithChildren> = ({
+  children,
+}) => {
+  const [user, setUser] = useState<User | null>(initialUser);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  }, [user]);
 
   return (
-    <UserStore.Provider value={{ loggedInUser, setLoggedInUser }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+      }}
+    >
       {children}
-    </UserStore.Provider>
+    </UserContext.Provider>
   );
 };
 
+/**
+ * Custom hook to use the user store
+ */
 export const useUserStore = () => {
-  const context = React.useContext(UserStore);
-
-  if (!context) {
-    throw new Error("useUserStore must be used within a UserStoreProvider");
-  }
-
-  return [context.loggedInUser, context.setLoggedInUser] as const;
+  return useContext(UserContext);
 };

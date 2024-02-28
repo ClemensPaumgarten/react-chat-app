@@ -31,18 +31,18 @@ export const ChatStoreProvider: FunctionComponent<
 > = ({ children }) => {
   const [openChatRooms, setOpenChatRooms] = useState<ChatRoom[]>([]);
   const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom | null>(null);
-  const [loggedInUser] = useUserStore();
+  const { user } = useUserStore();
 
   const fetchOpenChatroom = async () => {
-    if (loggedInUser) {
-      const chatRooms = await getOpenChatrooms(loggedInUser.id);
+    if (user) {
+      const chatRooms = await getOpenChatrooms(user.id);
       setOpenChatRooms(chatRooms);
     }
   };
 
   useEffect(() => {
     fetchOpenChatroom();
-  }, [loggedInUser]);
+  }, [user]);
 
   return (
     <ChatStore.Provider

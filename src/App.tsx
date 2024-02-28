@@ -2,44 +2,45 @@ import {
   createBrowserRouter,
   Outlet,
   RouterProvider,
+  useLocation,
   useNavigate,
 } from "react-router-dom";
 import { Register } from "./pages/Register.tsx";
 import { Chatroom } from "./pages/Chatroom.tsx";
-import { UserStoreProvider, useUserStore } from "./store/userStore.tsx";
 import { ChatStoreProvider } from "./store/chatStore.tsx";
 import { FunctionComponent, useEffect, useState } from "react";
-import { postRefresh } from "./api/user.ts";
+import { UserStoreProvider, useUserStore } from "./store/userStore.tsx";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
+/*
+    Main route is a wrapper to have a global check if the user is logged in or not
+    The Outlet component is used to render child routes
+ */
 const MainRoute: FunctionComponent = () => {
-  const [loggedInUser, setLoggedInUser] = useUserStore();
-  const [userVerified, setUserVerified] = useState(false);
+  const { user } = useUserStore();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [locationGuarded, setLocationGuarded] = useState(false);
 
   useEffect(() => {
-    const loadUser = async () => {
-      if (loggedInUser) {
-        const [user] = await postRefresh(loggedInUser?.id);
+    let route = location.pathname;
 
-        if (!user) {
-          setLoggedInUser(null);
-          navigate("/register");
-        } else {
-          navigate("/chat");
-        }
-      } else {
-        navigate("/register");
-      }
-
-      setUserVerified(true);
-    };
-
-    if (!userVerified) {
-      loadUser();
+    if (!!user && location.pathname === "/login") {
+      route = "chat";
+    } else if (!user && location.pathname === "/chat") {
+      route = "chat";
+    } else if (location.pathname === "/") {
+      route = !!user ? "chat" : "login";
     }
-  }, []);
 
-  return userVerified ? <Outlet /> : null;
+    if (route !== location.pathname) {
+      navigate(route);
+    } else {
+      setLocationGuarded(true);
+    }
+  }, [pathname]);
+
+  return locationGuarded ? <Outlet /> : null;
 };
 
 const browserRouter = createBrowserRouter([
@@ -50,6 +51,7 @@ const browserRouter = createBrowserRouter([
       {
         path: Register.path,
         action: Register.action,
+
         element: <Register />,
       },
       { path: Chatroom.path, element: <Chatroom />, loader: Chatroom.loader },
@@ -57,14 +59,15 @@ const browserRouter = createBrowserRouter([
   },
 ]);
 
-function App() {
+export function App() {
   return (
-    <UserStoreProvider>
-      <ChatStoreProvider>
-        <RouterProvider router={browserRouter} />
-      </ChatStoreProvider>
-    </UserStoreProvider>
+    <ThemeProvider theme={createTheme()}>
+      <CssBaseline />
+      <UserStoreProvider>
+        <ChatStoreProvider>
+          <RouterProvider router={browserRouter} />
+        </ChatStoreProvider>
+      </UserStoreProvider>
+    </ThemeProvider>
   );
 }
-
-export default App;

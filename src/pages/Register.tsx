@@ -1,78 +1,52 @@
-import { useEffect } from "react";
+import { useRef } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { Form, useActionData, useNavigate } from "react-router-dom";
-import { useUserStore } from "../store/userStore.tsx";
 import { Page } from "../models/page.ts";
 import { postRegister } from "../api/user.ts";
-import { isOfTypeError } from "../models/error.ts";
-import { User } from "../models/user.ts";
+import { useUserStore } from "../store/userStore.tsx";
+import { useNavigate } from "react-router-dom";
 
 export const Register: Page = () => {
+  const inputElement = useRef<HTMLInputElement>(null);
+  const { setUser } = useUserStore();
   const navigate = useNavigate();
-  const [loggedInUser, setLoggedInUser] = useUserStore();
-  const data = useActionData();
 
-  if (loggedInUser) {
-    navigate("/chat");
-    return null;
-  }
+  const onClick = () => {
+    if (inputElement.current) {
+      const value = inputElement.current.value;
 
-  useEffect(() => {
-    if (data) {
-      if (isOfTypeError(data)) {
-        console.error("Error logging in");
-      } else {
-        setLoggedInUser(data as User);
-        localStorage.setItem("user", JSON.stringify(data));
-        navigate("/chat");
+      if (value) {
+        postRegister({ username: value }).then(([user]) => {
+          if (user) {
+            setUser(user);
+
+            navigate("/chat");
+          }
+        });
       }
     }
-  }, [data]);
+  };
 
   return (
-    <Form method="POST" action="/register">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100vw",
-          height: "100vh",
-        }}
-      >
-        <Typography
-          sx={{
-            mb: 3,
-          }}
-          variant="h6"
-        >
-          Chatroom Login
-        </Typography>
+    <Box
+      sx={{
+        width: "400px",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Typography>Chatroom</Typography>
 
-        <TextField
-          label="Name"
-          name="username"
-          sx={{
-            width: "300px",
-          }}
-        />
+      <TextField inputRef={inputElement} />
 
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{
-            mt: 3,
-          }}
-        >
-          Anmelden
-        </Button>
-      </Box>
-    </Form>
+      <Button onClick={onClick}>Anmelden</Button>
+    </Box>
   );
 };
 
-Register.path = "register";
+Register.path = "login";
 
 Register.action = async ({ request }) => {
   let formData = await request.formData();
