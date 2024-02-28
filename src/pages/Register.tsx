@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { Page } from "../models/page.ts";
 import { postRegister } from "../api/user.ts";
 import { useUserStore } from "../store/userStore.tsx";
@@ -29,19 +29,31 @@ export const Register: Page = () => {
   return (
     <Box
       sx={{
-        width: "400px",
-        height: "100%",
+        width: "100%",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <Typography>Chatroom</Typography>
+      <Stack
+        sx={{
+          display: "flex",
+          alignItems: "center",
+        }}
+        spacing={3}
+      >
+        <Typography variant="h4" gutterBottom>
+          Chatroom Login
+        </Typography>
 
-      <TextField inputRef={inputElement} />
+        <TextField label="Username" inputRef={inputElement} fullWidth />
 
-      <Button onClick={onClick}>Anmelden</Button>
+        <Button variant="contained" color="secondary" onClick={onClick}>
+          Anmelden
+        </Button>
+      </Stack>
     </Box>
   );
 };

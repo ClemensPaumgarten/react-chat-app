@@ -28,7 +28,7 @@ const MainRoute: FunctionComponent = () => {
     if (!!user && location.pathname === "/login") {
       route = "chat";
     } else if (!user && location.pathname === "/chat") {
-      route = "chat";
+      route = "login";
     } else if (location.pathname === "/") {
       route = !!user ? "chat" : "login";
     }
