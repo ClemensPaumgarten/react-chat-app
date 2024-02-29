@@ -4,6 +4,22 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { BackendError } from "../models/error.ts";
 import { handleApiResponse } from "./index.ts";
 
+export const usePostRegister = () => {
+  return useMutation<User, BackendError, { username: string }>({
+    mutationFn: async (data: { username: string }) => {
+      const response = await fetch(`${API_URL}/user/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      return handelApiResponse<User>(response);
+    },
+  });
+};
+
 export const postRegister = async (data: { username: string }) => {
   const response = await fetch(`${API_URL}/user/register`, {
     method: "POST",

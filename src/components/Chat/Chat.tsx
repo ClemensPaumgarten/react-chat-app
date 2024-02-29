@@ -1,14 +1,14 @@
 import { FunctionComponent } from "react";
 import { AppBar, Box, Paper, Toolbar, Typography } from "@mui/material";
 import { useChatStore } from "../../store/chatStore.tsx";
-import { useUserStore } from "../../store/userStore.tsx";
 import { usePostMessage } from "../../api/chatroom.ts";
 import { MessagesList } from "../MessagesList/MessagesList.tsx";
 import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
+import { useUserSlice } from "../../slice/userSlice.ts";
 
 export const Chat: FunctionComponent = () => {
   const { currentChatRoom, setCurrentChatRoom } = useChatStore();
-  const { user } = useUserStore();
+  const { user } = useUserSlice();
   const { mutateAsync } = usePostMessage();
 
   const handleSendMessage = async (newMessage: string) => {

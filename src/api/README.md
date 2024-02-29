@@ -11,7 +11,7 @@ Input - `None`
 
 Output - `Chat[]`
 
-### `postRegistger` - Register a new user
+### `postRegister` - Register a new user
 
 Input - `string` username
 
