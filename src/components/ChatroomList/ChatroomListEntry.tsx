@@ -6,8 +6,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useUserStore } from "../../store/userStore.tsx";
 import { teal, grey } from "@mui/material/colors";
+import { useUserSlice } from "../../slice/userSlice.ts";
 
 type ChatRoomEntryProps = {
   chatRoom: ChatRoom;
@@ -20,8 +20,7 @@ export const ChatroomListEntry: FunctionComponent<ChatRoomEntryProps> = ({
   onChatRoomClick,
   isSelected,
 }) => {
-  const { user } = useUserStore();
-
+  const { user } = useUserSlice();
   const users = chatRoom.users.filter((u) => u.id !== user?.id);
 
   return (
