@@ -1,11 +1,12 @@
 import { FunctionComponent } from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { User } from "../../models/user.ts";
 import { usePostChatroom } from "../../api/chatroom.ts";
 import { useUserStore } from "../../store/userStore.tsx";
 import { UserList } from "./UserList.tsx";
 import { NoEntries } from "../NoEntries/NoEntries.tsx";
 import { useGetUsers } from "../../api/user.ts";
+import { SidebarList } from "../SidebarList/SidebarList.tsx";
 
 export const UserListContainer: FunctionComponent = () => {
   const { user: storeUser, users } = useUserStore();
@@ -21,22 +22,7 @@ export const UserListContainer: FunctionComponent = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <Typography
-        sx={{
-          padding: "8px",
-          backgroundColor: "#e8eaf6",
-        }}
-        variant="h6"
-      >
-        Available Users
-      </Typography>
-
+    <SidebarList title="Available Users">
       {isLoading ? (
         <Box
           sx={{
@@ -58,6 +44,6 @@ export const UserListContainer: FunctionComponent = () => {
           )}
         </>
       )}
-    </Box>
+    </SidebarList>
   );
 };
