@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import { renderWithProviders } from "../../testUtils/renderWithProviders.tsx";
 import { UserListContainer } from "./UserListContainer.tsx";
 
@@ -16,7 +16,7 @@ vi.mock("react-query", () => ({
   }),
 }));
 
-describe("UserlistContainer Component", () => {
+describe("UserListContainer Component", () => {
   test("renders Available Users Blocks", () => {
     renderWithProviders(<UserListContainer />);
 
@@ -27,8 +27,24 @@ describe("UserlistContainer Component", () => {
   test("renders userList", () => {
     renderWithProviders(<UserListContainer />);
 
-    setTimeout(() => {
+    waitFor(() => {
       expect(screen.getByText("User 1")).toBeInTheDocument();
-    }, 40);
+    });
+  });
+
+  test("renders No Users", () => {
+    vi.mock("react-query", () => ({
+      useQuery: vi.fn().mockReturnValue({
+        data: [],
+        isLoading: false,
+        error: {},
+      }),
+    }));
+
+    renderWithProviders(<UserListContainer />);
+
+    waitFor(() => {
+      expect(screen.getByText("No Users")).toBeInTheDocument();
+    });
   });
 });
