@@ -65,7 +65,6 @@ export const UserStoreProvider: FunctionComponent<PropsWithChildren> = ({
     }
   }, []);
 
-  console.log(checkedIfUserExists);
   return (
     <UserContext.Provider
       value={{

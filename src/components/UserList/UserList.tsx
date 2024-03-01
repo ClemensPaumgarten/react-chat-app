@@ -1,5 +1,4 @@
 import { Fragment, FunctionComponent } from "react";
-import { List } from "@mui/material";
 import { UserListEntry } from "./UserListEntry.tsx";
 import { User } from "../../models/user.ts";
 
@@ -13,16 +12,12 @@ export const UserList: FunctionComponent<UsersListProps> = ({
   openChatroom,
 }) => {
   return (
-    <List
-      sx={{
-        padding: 0,
-      }}
-    >
+    <Fragment>
       {activeUsers.map((user, index) => (
         <Fragment key={index}>
           <UserListEntry user={user} onClick={openChatroom} />
         </Fragment>
       ))}
-    </List>
+    </Fragment>
   );
 };
