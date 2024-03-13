@@ -1,5 +1,5 @@
 import { User } from "../models/user.ts";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { useAppSelector } from "../store/store.ts";
 
 const getUserFromLocalStorage = () => {
@@ -22,7 +22,7 @@ export const userSlice = createSlice({
     user: getUserFromLocalStorage(),
   } as UserStore,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<User>) => {
       const user = action.payload;
 
       state.user = user;
