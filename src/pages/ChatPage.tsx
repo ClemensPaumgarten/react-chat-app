@@ -5,7 +5,7 @@ import { Page } from "../models/page.ts";
 import { getUsers } from "../api/user.ts";
 import { User } from "../models/user.ts";
 
-export const Chatroom: Page = () => {
+export const ChatPage: Page = () => {
   return (
     <Box
       sx={{
@@ -20,9 +20,9 @@ export const Chatroom: Page = () => {
   );
 };
 
-Chatroom.path = "chat";
+ChatPage.path = "/chat";
 
-Chatroom.loader = async () => {
+ChatPage.loader = async () => {
   let users: User[] = [];
   try {
     users = await getUsers();

@@ -8,6 +8,10 @@ export const getUserFromLocalStorage = () => {
   return null;
 };
 
-export const setUserToLocalStorage = (user: User) => {
-  window.localStorage.setItem("user", JSON.stringify(user));
+export const setUserToLocalStorage = (user: User | null) => {
+  if (user) {
+    window.localStorage.setItem("user", JSON.stringify(user));
+  } else {
+    window.localStorage.removeItem("user");
+  }
 };
