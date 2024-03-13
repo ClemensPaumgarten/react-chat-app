@@ -1,4 +1,4 @@
-export const handelApiResponse = async <T extends unknown>(
+export const handelApiResponse = async <T extends object>(
   response: Response,
 ): Promise<T> => {
   const data = await response.json();
