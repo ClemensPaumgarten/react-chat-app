@@ -15,7 +15,7 @@ export const Register: Page = () => {
       const value = inputElement.current.value;
 
       if (value) {
-        postRegister({ username: value }).then(([user]) => {
+        postRegister({ username: value }).then((user) => {
           if (user) {
             setUser(user);
 
@@ -62,20 +62,9 @@ Register.path = "login";
 
 Register.action = async ({ request }) => {
   let formData = await request.formData();
-
   const username = formData.get("username");
 
-  if (username) {
-    const [user, error] = await postRegister({
-      username: formData.get("username") as string,
-    });
+  // TODO: add react router actions
 
-    if (error) {
-      return error;
-    } else {
-      return user;
-    }
-  }
-
-  return null;
+  return username;
 };

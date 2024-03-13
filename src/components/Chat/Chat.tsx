@@ -13,14 +13,18 @@ export const Chat: FunctionComponent = () => {
   const handleSendMessage = async (newMessage: string) => {
     if (!currentChatRoom || !user) return;
 
-    const [chatRoom] = await postMessage({
-      chatRoomId: currentChatRoom.id,
-      text: newMessage,
-      authorId: user.id,
-    });
+    try {
+      const chatRoom = await postMessage({
+        chatRoomId: currentChatRoom.id,
+        text: newMessage,
+        authorId: user.id,
+      });
 
-    if (chatRoom) {
-      setCurrentChatRoom(chatRoom);
+      if (chatRoom) {
+        setCurrentChatRoom(chatRoom);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -29,10 +33,15 @@ export const Chat: FunctionComponent = () => {
 
     const polling = async () => {
       if (!currentChatRoom) return;
-      const chatRoom = await getChatroom(currentChatRoom?.id);
 
-      if (chatRoom) {
-        setCurrentChatRoom(chatRoom);
+      try {
+        const chatRoom = await getChatroom(currentChatRoom.id);
+
+        if (chatRoom) {
+          setCurrentChatRoom(chatRoom);
+        }
+      } catch (e) {
+        console.error(e);
       }
     };
 

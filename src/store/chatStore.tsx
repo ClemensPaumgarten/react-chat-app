@@ -35,8 +35,12 @@ export const ChatStoreProvider: FunctionComponent<
 
   const fetchOpenChatroom = async () => {
     if (user) {
-      const chatRooms = await getOpenChatrooms(user.id);
-      setOpenChatRooms(chatRooms);
+      try {
+        const chatRooms = await getOpenChatrooms(user.id);
+        setOpenChatRooms(chatRooms);
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 

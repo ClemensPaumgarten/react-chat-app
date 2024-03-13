@@ -3,6 +3,7 @@ import { Sidebar } from "../components/Sidebar/Sidebar.tsx";
 import { ChatContainer } from "../components/Chat/ChatContainer.tsx";
 import { Page } from "../models/page.ts";
 import { getUsers } from "../api/user.ts";
+import { User } from "../models/user.ts";
 
 export const Chatroom: Page = () => {
   return (
@@ -22,7 +23,12 @@ export const Chatroom: Page = () => {
 Chatroom.path = "chat";
 
 Chatroom.loader = async () => {
-  const [users] = await getUsers();
+  let users: User[] = [];
+  try {
+    users = await getUsers();
+  } catch (e) {
+    console.error(e);
+  }
 
-  return users || [];
+  return users;
 };

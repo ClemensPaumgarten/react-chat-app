@@ -7,16 +7,19 @@ import {
   useState,
 } from "react";
 import { User } from "../models/user.ts";
+import {
+  getUserFromLocalStorage,
+  setUserToLocalStorage,
+} from "../storage/user.ts";
 
 type UserStore = {
   user: User | null;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
 
   // Add more properties here
 };
 
-const localUser = localStorage.getItem("user");
-const initialUser = localUser ? (JSON.parse(localUser) as User) : null;
+const initialUser = getUserFromLocalStorage();
 
 const UserContext = createContext<UserStore>({
   user: initialUser,
@@ -30,7 +33,7 @@ export const UserStoreProvider: FunctionComponent<PropsWithChildren> = ({
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+      setUserToLocalStorage(user);
     }
   }, [user]);
 

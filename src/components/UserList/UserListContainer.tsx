@@ -15,25 +15,33 @@ export const UserListContainer: FunctionComponent = () => {
 
   const onOpenChatroom = async (user: User) => {
     if (storeUser) {
-      const [chatroom] = await postChatroom([user.id, storeUser?.id]);
+      try {
+        const chatroom = await postChatroom([user.id, storeUser?.id]);
 
-      if (chatroom) {
-        setOpenChatRooms([chatroom, ...openChatRooms]);
+        if (chatroom) {
+          setOpenChatRooms([chatroom, ...openChatRooms]);
+        }
+      } catch (e) {
+        console.error(e);
       }
     }
   };
 
   useEffect(() => {
-    getUsers().then(([users, error]) => {
-      if (error) {
-        console.error("Error getting users");
-        return;
+    const fetchUsers = async () => {
+      try {
+        const users = await getUsers();
+        if (users) {
+          setActiveUsers(
+            users.filter((user) => user.id !== storeUser?.id) || [],
+          );
+        }
+      } catch (e) {
+        console.error(e);
       }
+    };
 
-      if (users) {
-        setActiveUsers(users.filter((user) => user.id !== storeUser?.id) || []);
-      }
-    });
+    fetchUsers();
   }, []);
 
   return (
