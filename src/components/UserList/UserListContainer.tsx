@@ -18,7 +18,11 @@ export const UserListContainer: FunctionComponent = () => {
       try {
         const chatroom = await postChatroom([user.id, storeUser?.id]);
 
-        if (chatroom) {
+        const inExisting = openChatRooms.find(
+          (room) => room.id === chatroom?.id,
+        );
+
+        if (chatroom && !inExisting) {
           setOpenChatRooms([chatroom, ...openChatRooms]);
         }
       } catch (e) {

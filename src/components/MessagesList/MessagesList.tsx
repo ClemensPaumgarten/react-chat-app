@@ -16,8 +16,8 @@ export const MessagesList: FunctionComponent<MessagesListProps> = ({
       sx={{
         padding: "20px",
         overflowY: "auto",
-        borderColor: "divider",
         borderBottom: "1px solid",
+        borderColor: "divider",
         display: "flex",
         flexDirection: "column",
         flexGrow: 1,

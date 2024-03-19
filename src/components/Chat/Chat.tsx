@@ -57,7 +57,7 @@ export const Chat: FunctionComponent = () => {
   }, []);
 
   const recipient =
-    currentChatRoom?.users.filter((user) => user.id !== user?.id) || [];
+    currentChatRoom?.users.filter((u) => u.id !== user?.id) || [];
 
   return (
     <Box
@@ -71,7 +71,11 @@ export const Chat: FunctionComponent = () => {
     >
       <AppBar
         sx={{
-          backgroundColor: "primary.dark",
+          backgroundColor: "#fff",
+          color: "#000",
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          maxHeight: 64,
         }}
         elevation={2}
         position="static"

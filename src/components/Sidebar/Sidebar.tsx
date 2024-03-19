@@ -12,6 +12,7 @@ export const Sidebar: FunctionComponent = () => {
         width: "450px",
         height: "100vh",
         overflowY: "scroll",
+        borderRadius: "0",
       }}
     >
       <Box
