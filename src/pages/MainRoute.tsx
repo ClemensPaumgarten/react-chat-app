@@ -6,7 +6,7 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { isOfTypeUser } from "../models/user.ts";
+import { isOfTypeUser, User } from "../models/user.ts";
 import { Page } from "../models/page.ts";
 import { getUserFromLocalStorage } from "../storage/user.ts";
 import { postRefresh } from "../api/user.ts";
@@ -14,7 +14,7 @@ import { ChatPage } from "./ChatPage.tsx";
 import { Register } from "./Register.tsx";
 
 export const MainRoute: Page = () => {
-  const { setUser } = useUserStore();
+  const { setUser, user: storeUser } = useUserStore();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [locationGuarded, setLocationGuarded] = useState(false);
@@ -23,9 +23,10 @@ export const MainRoute: Page = () => {
   useEffect(() => {
     let route = location.pathname;
 
-    if (typeof loaderData === "object" && isOfTypeUser(loaderData)) {
+    const userData = (loaderData || storeUser) as User | null;
+    if (isOfTypeUser(userData)) {
       // users exists in db always navigate to chat
-      if (!!loaderData && location.pathname !== ChatPage.path) {
+      if (!!userData && location.pathname !== ChatPage.path) {
         route = ChatPage.path;
       }
     } else {

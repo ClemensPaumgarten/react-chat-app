@@ -31,6 +31,18 @@ export const usePostRefresh = () =>
     },
   });
 
+export const postRefresh = async (storedUserId: string): Promise<User> => {
+  return handleApiResponse<User>(
+    await fetch(`${API_URL}/user/refresh`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: storedUserId }),
+    }),
+  );
+};
+
 export const GET_USERS_QUERY_KEY = "GET_USERS";
 export const useGetUsers = (refetchInterval: number | false = false) =>
   useQuery<User[]>({

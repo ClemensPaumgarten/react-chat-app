@@ -15,8 +15,8 @@ export const Register: Page = () => {
     onSuccess: (data) => {
       if (data) {
         setUser(data);
-        navigate("/chat");
         localStorage.setItem("user", JSON.stringify(data));
+        navigate("/chat");
       }
     },
   });
@@ -51,7 +51,12 @@ export const Register: Page = () => {
 
         <TextField label="Username" inputRef={inputElement} fullWidth />
 
-        <Button variant="contained" color="secondary" onClick={onClick}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="secondary"
+          onClick={onClick}
+        >
           Anmelden
         </Button>
       </Stack>
@@ -59,4 +64,4 @@ export const Register: Page = () => {
   );
 };
 
-Register.path = "login";
+Register.path = "/register";
