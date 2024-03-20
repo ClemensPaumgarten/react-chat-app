@@ -1,6 +1,6 @@
 import { ChatRoom, User } from "../models/user.ts";
 import { API_URL } from "../constants.ts";
-import { handelApiResponse } from "./index.ts";
+import { handleApiResponse } from "./index.ts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const GET_CHAT_ROOM = "CURRENT_CHATROOM";
@@ -16,7 +16,7 @@ export const useGetChatroom = (
       }
 
       const response = await fetch(`${API_URL}/chatroom/${chatroomId}`);
-      return handelApiResponse<ChatRoom>(response);
+      return handleApiResponse<ChatRoom>(response);
     },
     refetchInterval: refetchInterval,
     initialData: null,
@@ -30,7 +30,7 @@ export const useGetOpenChatrooms = (user: User | null) =>
     queryFn: async () => {
       if (user) {
         const response = await fetch(`${API_URL}/chatroom/user/${user.id}`);
-        return handelApiResponse<ChatRoom[]>(response);
+        return handleApiResponse<ChatRoom[]>(response);
       }
       return [];
     },
@@ -49,7 +49,7 @@ export const usePostChatroom = () => {
         body: JSON.stringify({ userIds }),
       });
 
-      return handelApiResponse<ChatRoom>(response);
+      return handleApiResponse<ChatRoom>(response);
     },
     onSuccess: () => {
       return queryClient.invalidateQueries({
@@ -77,6 +77,6 @@ export const usePostMessage = () =>
         },
       );
 
-      return handelApiResponse<ChatRoom>(response);
+      return handleApiResponse<ChatRoom>(response);
     },
   });
