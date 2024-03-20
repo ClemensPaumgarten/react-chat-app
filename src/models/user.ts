@@ -4,9 +4,10 @@ export type User = {
 };
 
 export const isOfTypeUser = (obj: unknown): obj is User => {
-  return !!obj && typeof obj === "object" && "id" in obj && "username" in obj;
+  return (
+    typeof obj === "object" && obj !== null && "id" in obj && "username" in obj
+  );
 };
-
 export type ChatMessage = {
   id: string;
   text: string;
