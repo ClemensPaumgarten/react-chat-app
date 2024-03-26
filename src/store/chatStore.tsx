@@ -8,18 +8,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useUserStore } from "./userStore.tsx";
-import { useGetChatroom, useGetOpenChatrooms } from "../api/chatroom.ts";
+import { useGetChatroom } from "../api/chatroom.ts";
 
 type ChatStore = {
-  openChatRooms: ChatRoom[];
-
   currentChatRoom: ChatRoom | null;
   setCurrentChatRoom: Dispatch<ChatRoom | null>;
 };
 
 const ChatStore = createContext<ChatStore>({
-  openChatRooms: [],
   currentChatRoom: null,
   setCurrentChatRoom: () => {},
 });
@@ -28,8 +24,6 @@ export const ChatStoreProvider: FunctionComponent<
   PropsWithChildren<unknown>
 > = ({ children }) => {
   const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom | null>(null);
-  const { user } = useUserStore();
-  const { data: openChatrooms } = useGetOpenChatrooms(user);
   const { data: chatroom } = useGetChatroom(currentChatRoom?.id || null, 2000);
 
   useEffect(() => {
@@ -41,7 +35,6 @@ export const ChatStoreProvider: FunctionComponent<
   return (
     <ChatStore.Provider
       value={{
-        openChatRooms: openChatrooms || [],
         currentChatRoom: currentChatRoom,
         setCurrentChatRoom,
       }}
@@ -58,7 +51,6 @@ export const useChatStore = () => {
   }
 
   return {
-    openChatRooms: chatStore.openChatRooms,
     currentChatRoom: chatStore.currentChatRoom,
     setCurrentChatRoom: chatStore.setCurrentChatRoom,
   };

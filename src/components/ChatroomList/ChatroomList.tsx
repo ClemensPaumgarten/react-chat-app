@@ -2,9 +2,13 @@ import { FunctionComponent } from "react";
 import { Box, List, Typography } from "@mui/material";
 import { ChatroomListEntry } from "./ChatroomListEntry.tsx";
 import { useChatStore } from "../../store/chatStore.tsx";
+import { useGetOpenChatrooms } from "../../api/chatroom.ts";
+import { useUserStore } from "../../store/userStore.tsx";
 
 export const ChatroomList: FunctionComponent = () => {
-  const { openChatRooms, setCurrentChatRoom, currentChatRoom } = useChatStore();
+  const { setCurrentChatRoom, currentChatRoom } = useChatStore();
+  const { user } = useUserStore();
+  const { data: openChatrooms = [] } = useGetOpenChatrooms(user);
 
   return (
     <Box
@@ -28,7 +32,7 @@ export const ChatroomList: FunctionComponent = () => {
           padding: 0,
         }}
       >
-        {openChatRooms.map((chatroom) => (
+        {openChatrooms.map((chatroom) => (
           <ChatroomListEntry
             isSelected={chatroom.id === currentChatRoom?.id}
             key={chatroom.id}
