@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useUserStore } from "../store/userStore.tsx";
 import {
   Outlet,
   useLoaderData,
@@ -12,13 +11,16 @@ import { getUserFromLocalStorage } from "../storage/user.ts";
 import { postRefresh } from "../api/user.ts";
 import { ChatPage } from "./ChatPage.tsx";
 import { Register } from "./Register.tsx";
+import { setUser, useUserSlice } from "../slice/userSlice.ts";
+import { useAppDispatch } from "../store/store.ts";
 
 export const MainRoute: Page = () => {
-  const { setUser, user: storeUser } = useUserStore();
+  const { user: storeUser } = useUserSlice();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [locationGuarded, setLocationGuarded] = useState(false);
   const loaderData = useLoaderData();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     let route = location.pathname;
@@ -30,7 +32,7 @@ export const MainRoute: Page = () => {
         route = ChatPage.path;
       }
     } else {
-      setUser(null);
+      dispatch(setUser(null));
       route = Register.path;
     }
 

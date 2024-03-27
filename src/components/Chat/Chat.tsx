@@ -1,30 +1,34 @@
 import { FunctionComponent } from "react";
 import { AppBar, Box, Paper, Toolbar, Typography } from "@mui/material";
-import { useChatStore } from "../../store/chatStore.tsx";
 import { usePostMessage } from "../../api/chatroom.ts";
 import { MessagesList } from "../MessagesList/MessagesList.tsx";
 import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
 import { useUserSlice } from "../../slice/userSlice.ts";
+import { setCurrentChatRoom, useChatSlice } from "../../slice/chatSlice.ts";
+import { useAppDispatch } from "../../store/store.ts";
 
 export const Chat: FunctionComponent = () => {
-  const { currentChatRoom, setCurrentChatRoom } = useChatStore();
+  const { currentChatRoom } = useChatSlice();
   const { user } = useUserSlice();
   const { mutateAsync } = usePostMessage();
+  const dispatch = useAppDispatch();
 
   const handleSendMessage = async (newMessage: string) => {
     if (!currentChatRoom || !user) return;
 
-    setCurrentChatRoom({
-      ...currentChatRoom,
-      messages: [
-        ...currentChatRoom.messages,
-        {
-          author: user.id,
-          id: "temp-id",
-          text: newMessage,
-        },
-      ],
-    });
+    dispatch(
+      setCurrentChatRoom({
+        ...currentChatRoom,
+        messages: [
+          ...currentChatRoom.messages,
+          {
+            author: user.id,
+            id: "temp-id",
+            text: newMessage,
+          },
+        ],
+      }),
+    );
 
     try {
       const chatRoom = await mutateAsync({
@@ -33,7 +37,7 @@ export const Chat: FunctionComponent = () => {
         authorId: user.id,
       });
 
-      setCurrentChatRoom(chatRoom);
+      dispatch(setCurrentChatRoom(chatRoom));
     } catch (e) {
       console.error(e);
     }

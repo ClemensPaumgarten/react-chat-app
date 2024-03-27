@@ -3,22 +3,15 @@ import { createSlice } from "@reduxjs/toolkit";
 import { useAppSelector } from "../store/store.ts";
 
 export type ChatStore = {
-  openChatRooms: ChatRoom[];
   currentChatRoom: ChatRoom | null;
 };
 
 export const chatSlice = createSlice({
   name: "chat",
   initialState: {
-    openChatRooms: [],
     currentChatRoom: null,
   } as ChatStore,
   reducers: {
-    setOpenChatRooms: (state, action) => {
-      state.openChatRooms = action.payload;
-
-      return state;
-    },
     setCurrentChatRoom: (state, action) => {
       state.currentChatRoom = action.payload;
 
@@ -27,7 +20,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setOpenChatRooms, setCurrentChatRoom } = chatSlice.actions;
+export const { setCurrentChatRoom } = chatSlice.actions;
 
 export const useChatSlice = () => {
   return useAppSelector((state) => state.chat);
