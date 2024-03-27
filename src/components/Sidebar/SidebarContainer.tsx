@@ -1,8 +1,8 @@
 import { Sidebar } from "./Sidebar.tsx";
-import { useUserStore } from "../../store/userStore.tsx";
+import { useUserSlice } from "../../slice/userSlice.ts";
 
 export const SidebarContainer = () => {
-  const { user } = useUserStore();
+  const { user } = useUserSlice();
 
   return user ? <Sidebar user={user} /> : null;
 };

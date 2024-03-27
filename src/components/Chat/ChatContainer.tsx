@@ -1,27 +1,36 @@
-import { useChatStore } from "../../store/chatStore.tsx";
-import { useUserStore } from "../../store/userStore.tsx";
 import { Chat } from "./Chat.tsx";
-import { usePostMessage } from "../../api/chatroom.ts";
+import { useGetChatroom, usePostMessage } from "../../api/chatroom.ts";
+import { useUserSlice } from "../../slice/userSlice.ts";
+import { setCurrentChatRoom, useChatSlice } from "../../slice/chatSlice.ts";
+import { useAppDispatch } from "../../store/store.ts";
+import { useEffect } from "react";
 
 export const ChatContainer = () => {
-  const { currentChatRoom, setCurrentChatRoom } = useChatStore();
-  const { user } = useUserStore();
+  const { currentChatRoom } = useChatSlice();
+  const dispatch = useAppDispatch();
+  const { user } = useUserSlice();
   const { mutateAsync } = usePostMessage();
+  const { data: backendChatroom } = useGetChatroom(
+    currentChatRoom?.id || null,
+    2000,
+  );
 
   const handleSendMessage = async (newMessage: string) => {
     if (!currentChatRoom || !user) return;
 
-    setCurrentChatRoom({
-      ...currentChatRoom,
-      messages: [
-        ...currentChatRoom.messages,
-        {
-          author: user.id,
-          id: "temp-id",
-          text: newMessage,
-        },
-      ],
-    });
+    dispatch(
+      setCurrentChatRoom({
+        ...currentChatRoom,
+        messages: [
+          ...currentChatRoom.messages,
+          {
+            author: user.id,
+            id: "temp-id",
+            text: newMessage,
+          },
+        ],
+      }),
+    );
 
     try {
       const chatRoom = await mutateAsync({
@@ -35,6 +44,12 @@ export const ChatContainer = () => {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    if (backendChatroom) {
+      dispatch(setCurrentChatRoom(backendChatroom));
+    }
+  }, [backendChatroom]);
 
   const recipient =
     currentChatRoom?.users.filter((u) => u.id !== user?.id) || [];

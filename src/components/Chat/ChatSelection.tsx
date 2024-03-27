@@ -1,10 +1,10 @@
 import { FunctionComponent } from "react";
-import { useChatStore } from "../../store/chatStore.tsx";
 import { SelectChat } from "../SelectChat/SelectChat.tsx";
 import { ChatContainer } from "./ChatContainer.tsx";
+import { useChatSlice } from "../../slice/chatSlice.ts";
 
 export const ChatSelection: FunctionComponent = () => {
-  const { currentChatRoom } = useChatStore();
+  const { currentChatRoom } = useChatSlice();
 
   return currentChatRoom ? <ChatContainer /> : <SelectChat />;
 };
