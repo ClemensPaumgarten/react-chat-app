@@ -1,64 +1,22 @@
-import { FunctionComponent, useEffect } from "react";
+import { FunctionComponent } from "react";
 import { AppBar, Box, Paper, Toolbar, Typography } from "@mui/material";
-import { useChatStore } from "../../store/chatStore.tsx";
-import { useUserStore } from "../../store/userStore.tsx";
-import { getChatroom, postMessage } from "../../api/chatroom.ts";
 import { MessagesList } from "../MessagesList/MessagesList.tsx";
 import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
+import { ChatRoom, User } from "../../models/user.ts";
 
-export const Chat: FunctionComponent = () => {
-  const { currentChatRoom, setCurrentChatRoom } = useChatStore();
-  const { user } = useUserStore();
+type ChatProps = {
+  recipientName: string;
+  user: User;
+  currentChatRoom: ChatRoom;
+  handleMessage: (newMessage: string) => void;
+};
 
-  const handleSendMessage = async (newMessage: string) => {
-    if (!currentChatRoom || !user) return;
-
-    try {
-      const chatRoom = await postMessage({
-        chatRoomId: currentChatRoom.id,
-        text: newMessage,
-        authorId: user.id,
-      });
-
-      if (chatRoom) {
-        setCurrentChatRoom(chatRoom);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null;
-
-    const polling = async () => {
-      if (!currentChatRoom) return;
-
-      try {
-        const chatRoom = await getChatroom(currentChatRoom.id);
-
-        if (chatRoom) {
-          setCurrentChatRoom(chatRoom);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    if (currentChatRoom) {
-      intervalId = setInterval(polling, 3000);
-    }
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, []);
-
-  const recipient =
-    currentChatRoom?.users.filter((u) => u.id !== user?.id) || [];
-
+export const Chat: FunctionComponent<ChatProps> = ({
+  recipientName,
+  user,
+  currentChatRoom,
+  handleMessage,
+}) => {
   return (
     <Box
       sx={{
@@ -81,9 +39,7 @@ export const Chat: FunctionComponent = () => {
         position="static"
       >
         <Toolbar>
-          <Typography variant="h6">
-            Chat with {recipient.map((r) => r.username)}
-          </Typography>
+          <Typography variant="h6">Chat with {recipientName}</Typography>
         </Toolbar>
       </AppBar>
       <Paper
@@ -101,7 +57,7 @@ export const Chat: FunctionComponent = () => {
           />
         )}
 
-        <ChatSendBarContainer onSend={handleSendMessage} />
+        <ChatSendBarContainer onSend={handleMessage} />
       </Paper>
     </Box>
   );
