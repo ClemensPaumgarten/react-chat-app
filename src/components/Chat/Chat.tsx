@@ -1,61 +1,22 @@
-import { FunctionComponent, useEffect } from "react";
+import { FunctionComponent } from "react";
 import { AppBar, Box, Paper, Toolbar, Typography } from "@mui/material";
-import { useGetChatroom, usePostMessage } from "../../api/chatroom.ts";
 import { MessagesList } from "../MessagesList/MessagesList.tsx";
 import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
-import { useUserSlice } from "../../slice/userSlice.ts";
-import { setCurrentChatRoom, useChatSlice } from "../../slice/chatSlice.ts";
-import { useAppDispatch } from "../../store/store.ts";
+import { ChatRoom, User } from "../../models/user.ts";
 
-export const Chat: FunctionComponent = () => {
-  const { currentChatRoom } = useChatSlice();
-  const { user } = useUserSlice();
-  const { mutateAsync } = usePostMessage();
-  const dispatch = useAppDispatch();
-  const { data: chatRoomSync } = useGetChatroom(
-    currentChatRoom?.id || null,
-    5000,
-  );
+type ChatProps = {
+  recipientName: string;
+  user: User;
+  currentChatRoom: ChatRoom;
+  handleMessage: (newMessage: string) => void;
+};
 
-  const handleSendMessage = async (newMessage: string) => {
-    if (!currentChatRoom || !user) return;
-
-    dispatch(
-      setCurrentChatRoom({
-        ...currentChatRoom,
-        messages: [
-          ...currentChatRoom.messages,
-          {
-            author: user.id,
-            id: "temp-id",
-            text: newMessage,
-          },
-        ],
-      }),
-    );
-
-    try {
-      const chatRoom = await mutateAsync({
-        chatRoomId: currentChatRoom.id,
-        text: newMessage,
-        authorId: user.id,
-      });
-
-      dispatch(setCurrentChatRoom(chatRoom));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  useEffect(() => {
-    if (chatRoomSync) {
-      dispatch(setCurrentChatRoom(chatRoomSync));
-    }
-  }, [chatRoomSync, dispatch]);
-
-  const recipient =
-    currentChatRoom?.users.filter((u) => u.id !== user?.id) || [];
-
+export const Chat: FunctionComponent<ChatProps> = ({
+  recipientName,
+  user,
+  currentChatRoom,
+  handleMessage,
+}) => {
   return (
     <Box
       sx={{
@@ -78,9 +39,7 @@ export const Chat: FunctionComponent = () => {
         position="static"
       >
         <Toolbar>
-          <Typography variant="h6">
-            Chat with {recipient.map((r) => r.username)}
-          </Typography>
+          <Typography variant="h6">Chat with {recipientName}</Typography>
         </Toolbar>
       </AppBar>
       <Paper
@@ -98,7 +57,7 @@ export const Chat: FunctionComponent = () => {
           />
         )}
 
-        <ChatSendBarContainer onSend={handleSendMessage} />
+        <ChatSendBarContainer onSend={handleMessage} />
       </Paper>
     </Box>
   );
