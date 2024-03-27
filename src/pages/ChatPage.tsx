@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
-import { ChatContainer } from "../components/Chat/ChatContainer.tsx";
 import { Page } from "../models/page.ts";
 import { getUsers } from "../api/user.ts";
 import { User } from "../models/user.ts";
 import { SidebarContainer } from "../components/Sidebar/SidebarContainer.tsx";
+import { ChatSelection } from "../components/Chat/ChatSelection.tsx";
 
 export const ChatPage: Page = () => {
   return (
@@ -15,7 +15,7 @@ export const ChatPage: Page = () => {
       }}
     >
       <SidebarContainer />
-      <ChatContainer />
+      <ChatSelection />
     </Box>
   );
 };
