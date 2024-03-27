@@ -1,6 +1,6 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
 import { AppBar, Box, Paper, Toolbar, Typography } from "@mui/material";
-import { usePostMessage } from "../../api/chatroom.ts";
+import { useGetChatroom, usePostMessage } from "../../api/chatroom.ts";
 import { MessagesList } from "../MessagesList/MessagesList.tsx";
 import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
 import { useUserSlice } from "../../slice/userSlice.ts";
@@ -12,6 +12,10 @@ export const Chat: FunctionComponent = () => {
   const { user } = useUserSlice();
   const { mutateAsync } = usePostMessage();
   const dispatch = useAppDispatch();
+  const { data: chatRoomSync } = useGetChatroom(
+    currentChatRoom?.id || null,
+    5000,
+  );
 
   const handleSendMessage = async (newMessage: string) => {
     if (!currentChatRoom || !user) return;
@@ -42,6 +46,12 @@ export const Chat: FunctionComponent = () => {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    if (chatRoomSync) {
+      dispatch(setCurrentChatRoom(chatRoomSync));
+    }
+  }, [chatRoomSync, dispatch]);
 
   const recipient =
     currentChatRoom?.users.filter((u) => u.id !== user?.id) || [];
