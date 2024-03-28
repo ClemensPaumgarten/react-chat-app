@@ -52,7 +52,7 @@ export const ChatContainer = () => {
         clearInterval(intervalId);
       }
     };
-  }, []);
+  }, [currentChatRoom]);
 
   const recipient =
     currentChatRoom?.users.filter((u) => u.id !== user?.id) || [];
