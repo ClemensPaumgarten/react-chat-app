@@ -15,7 +15,8 @@ export const MessagesList: FunctionComponent<MessagesListProps> = ({
     <Box
       sx={{
         padding: "20px",
-        overflowY: "auto",
+        overflowY: "scroll",
+        height: 600,
         borderBottom: "1px solid",
         borderColor: "divider",
         display: "flex",
