@@ -9,8 +9,8 @@ import { useGetUsers } from "../../api/user.ts";
 import { SidebarList } from "../SidebarList/SidebarList.tsx";
 
 export const UserListContainer: FunctionComponent = () => {
-  const { user: storeUser, users } = useUserStore();
-  const { isLoading } = useGetUsers();
+  const { user: storeUser } = useUserStore();
+  const { isLoading, data: users } = useGetUsers();
 
   const { mutate } = usePostChatroom();
   const activeUsers = users.filter((user) => user.id !== storeUser?.id) || [];

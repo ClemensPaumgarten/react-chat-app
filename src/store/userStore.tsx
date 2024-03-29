@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { User } from "../models/user.ts";
-import { useGetUsers, usePostRefresh } from "../api/user.ts";
+import { usePostRefresh } from "../api/user.ts";
 import { BackendError } from "../models/error.ts";
 import {
   getUserFromLocalStorage,
@@ -17,9 +17,6 @@ import {
 type UserStore = {
   user: User | null;
   setUser: (user: User | null) => void;
-  users: User[];
-
-  // Add more properties here
 };
 
 const initialUser = getUserFromLocalStorage();
@@ -27,7 +24,6 @@ const initialUser = getUserFromLocalStorage();
 const UserContext = createContext<UserStore>({
   user: initialUser,
   setUser: () => void 0,
-  users: [],
 });
 
 export const UserStoreProvider: FunctionComponent<PropsWithChildren> = ({
@@ -35,7 +31,6 @@ export const UserStoreProvider: FunctionComponent<PropsWithChildren> = ({
 }) => {
   const [user, setUser] = useState<User | null>(initialUser);
   const [checkedIfUserExists, setCheckedIfUserExists] = useState(!user);
-  const { data: users } = useGetUsers(5000);
   const { mutateAsync } = usePostRefresh();
 
   useEffect(() => {
@@ -70,7 +65,6 @@ export const UserStoreProvider: FunctionComponent<PropsWithChildren> = ({
       value={{
         user,
         setUser,
-        users,
       }}
     >
       {checkedIfUserExists ? children : null}
