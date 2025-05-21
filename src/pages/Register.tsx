@@ -1,31 +1,36 @@
-import { useRef } from "react";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { Page } from "../models/page.ts";
 import { postRegister } from "../api/user.ts";
-import { useUserStore } from "../store/userStore.tsx";
-import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "../store/useAuth.tsx";
+import { useInput } from "../hooks/useInput.ts";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const Register: Page = () => {
-  const inputElement = useRef<HTMLInputElement>(null);
-  const { setUser } = useUserStore();
-  const navigate = useNavigate();
-  const mutation = useMutation({
+  const { setUser } = useAuth();
+  const { mutateAsync: login } = useMutation({
     mutationFn: postRegister,
-    onSuccess: (data) => {
-      if (data) {
-        setUser(data);
-        navigate("/chat");
-        localStorage.setItem("user", JSON.stringify(data));
-      }
+  });
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+
+  const { value, onChange, error, onSubmit } = useInput({
+    initialValue: "",
+    validate: (value) => (value.length === 0 ? "Username is required" : null),
+    onValidSubmit: (value) => {
+      login({
+        username: value,
+      }).then((user) => {
+        setUser(user);
+
+        navigate(
+          params.get("redirect")
+            ? decodeURIComponent(params.get("redirect")!)
+            : "/",
+        );
+      });
     },
   });
-
-  const onClick = () => {
-    if (inputElement.current?.value) {
-      mutation.mutate({ username: inputElement.current?.value });
-    }
-  };
 
   return (
     <Box
@@ -49,9 +54,16 @@ export const Register: Page = () => {
           Chatroom Login
         </Typography>
 
-        <TextField label="Username" inputRef={inputElement} fullWidth />
+        <TextField
+          label="Username"
+          value={value}
+          onChange={onChange}
+          helperText={!!error ? error : ""}
+          fullWidth
+          error={!!error}
+        />
 
-        <Button variant="contained" color="secondary" onClick={onClick}>
+        <Button variant="contained" color="secondary" onClick={onSubmit}>
           Anmelden
         </Button>
       </Stack>

@@ -59,8 +59,9 @@ export const usePostChatroom = () => {
   });
 };
 
-export const usePostMessage = () =>
-  useMutation<
+export const usePostMessage = () => {
+  const queryClient = useQueryClient();
+  return useMutation<
     ChatRoom,
     unknown,
     { chatRoomId: ChatRoom["id"]; text: string; authorId: string }
@@ -79,4 +80,10 @@ export const usePostMessage = () =>
 
       return handelApiResponse<ChatRoom>(response);
     },
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: [GET_CHAT_ROOM],
+      });
+    },
   });
+};

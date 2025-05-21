@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { BackendError } from "../models/error.ts";
 
 export const postRegister = async (data: { username: string }) => {
-  const response = await fetch(`${API_URL}/user/register`, {
+  const response = await fetch(`${API_URL}/users/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export const postRegister = async (data: { username: string }) => {
 export const usePostRefresh = () =>
   useMutation<User, BackendError, string>({
     mutationFn: async (loggedInUser: string) => {
-      const response = await fetch(`${API_URL}/user/refresh`, {
+      const response = await fetch(`${API_URL}/users/refresh`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export const useGetUsers = (refetchInterval: number | false = false) =>
     initialData: [],
     queryKey: [GET_USERS_QUERY_KEY],
     queryFn: async () => {
-      const response = await fetch(`${API_URL}/user/users`);
+      const response = await fetch(`${API_URL}/users`);
       return handelApiResponse<User[]>(response);
     },
     refetchInterval: refetchInterval,

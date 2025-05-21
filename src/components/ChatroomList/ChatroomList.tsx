@@ -2,9 +2,13 @@ import { FunctionComponent } from "react";
 import { Box, List, Typography } from "@mui/material";
 import { ChatroomListEntry } from "./ChatroomListEntry.tsx";
 import { useChatStore } from "../../store/chatStore.tsx";
+import { useGetOpenChatrooms } from "../../api/chatroom.ts";
+import { useAuth } from "../../store/useAuth.tsx";
 
 export const ChatroomList: FunctionComponent = () => {
-  const { openChatRooms, setCurrentChatRoom, currentChatRoom } = useChatStore();
+  const { setCurrentChatRoom, currentChatRoom } = useChatStore();
+  const { user } = useAuth();
+  const { data: openChatRooms = [] } = useGetOpenChatrooms(user);
 
   return (
     <Box

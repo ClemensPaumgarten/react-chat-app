@@ -7,7 +7,7 @@ export const ChatContainer: FunctionComponent = () => {
   const { currentChatRoom } = useChatStore();
 
   return currentChatRoom ? (
-    <Chat />
+    <Chat chatRoom={currentChatRoom} />
   ) : (
     <Box
       sx={{

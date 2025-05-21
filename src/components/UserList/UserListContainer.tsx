@@ -2,15 +2,15 @@ import { FunctionComponent } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import { User } from "../../models/user.ts";
 import { usePostChatroom } from "../../api/chatroom.ts";
-import { useUserStore } from "../../store/userStore.tsx";
 import { UserList } from "./UserList.tsx";
 import { NoEntries } from "../NoEntries/NoEntries.tsx";
 import { useGetUsers } from "../../api/user.ts";
 import { SidebarList } from "../SidebarList/SidebarList.tsx";
+import { useAuth } from "../../store/useAuth.tsx";
 
 export const UserListContainer: FunctionComponent = () => {
-  const { user: storeUser, users } = useUserStore();
-  const { isLoading } = useGetUsers();
+  const { user: storeUser } = useAuth();
+  const { isLoading, data: users = [] } = useGetUsers(5000);
 
   const { mutate } = usePostChatroom();
   const activeUsers = users.filter((user) => user.id !== storeUser?.id) || [];

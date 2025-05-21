@@ -6,8 +6,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useUserStore } from "../../store/userStore.tsx";
 import { teal, grey } from "@mui/material/colors";
+import { useAuth } from "../../store/useAuth.tsx";
 
 type ChatRoomEntryProps = {
   chatRoom: ChatRoom;
@@ -20,7 +20,7 @@ export const ChatroomListEntry: FunctionComponent<ChatRoomEntryProps> = ({
   onChatRoomClick,
   isSelected,
 }) => {
-  const { user } = useUserStore();
+  const { user } = useAuth();
 
   const users = chatRoom.users.filter((u) => u.id !== user?.id);
 
