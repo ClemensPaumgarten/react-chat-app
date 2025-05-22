@@ -3,6 +3,7 @@ import { Register } from "./pages/Register.tsx";
 import { Chatroom } from "./pages/Chatroom.tsx";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute.tsx";
 import { MainLayout } from "./components/MainLayout/MainLayout.tsx";
+import { Settings } from "./pages/Settings.tsx";
 
 export const ChatRouter = () => {
   const browserRouter = createBrowserRouter([
@@ -14,7 +15,11 @@ export const ChatRouter = () => {
         </ProtectedRoute>
       ),
 
-      children: [{ path: "", element: <Chatroom /> }],
+      children: [
+        { index: true, path: "/", element: <Chatroom /> },
+        { path: "/chat", element: <Chatroom /> },
+        { path: "settings", element: <Settings /> },
+      ],
     },
 
     {

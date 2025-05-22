@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 type UseInputProps = {
   initialValue?: string;
@@ -18,14 +18,14 @@ export const useInput = ({
     setError(""); // clear error on input
   };
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     const validationError = validate(value);
     if (validationError) {
       setError(validationError);
     } else {
       onValidSubmit(value);
     }
-  };
+  }, [value, setError, onValidSubmit]);
 
   return { value, onChange, onSubmit, error };
 };

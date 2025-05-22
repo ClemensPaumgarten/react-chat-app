@@ -57,7 +57,7 @@ const AccountPopover: FunctionComponent = () => {
 export const MainLayout: FunctionComponent = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <AppBar position="sticky">
+      <AppBar elevation={1} position="sticky">
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <AccountPopover />
         </Toolbar>

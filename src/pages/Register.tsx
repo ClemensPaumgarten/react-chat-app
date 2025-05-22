@@ -1,10 +1,11 @@
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { Page } from "../models/page.ts";
 import { postRegister } from "../api/user.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../store/useAuth.tsx";
 import { useInput } from "../hooks/useInput.ts";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { TextInput } from "../components/TextInput/TextInput.tsx";
 
 export const Register: Page = () => {
   const { setUser } = useAuth();
@@ -54,13 +55,11 @@ export const Register: Page = () => {
           Chatroom Login
         </Typography>
 
-        <TextField
+        <TextInput
           label="Username"
           value={value}
           onChange={onChange}
-          helperText={!!error ? error : ""}
-          fullWidth
-          error={!!error}
+          error={error}
         />
 
         <Button variant="contained" color="secondary" onClick={onSubmit}>
