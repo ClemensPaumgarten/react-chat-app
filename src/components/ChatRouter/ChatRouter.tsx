@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Register } from "./pages/Register.tsx";
-import { Chatroom } from "./pages/Chatroom.tsx";
-import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute.tsx";
-import { MainLayout } from "./components/MainLayout/MainLayout.tsx";
-import { Settings } from "./pages/Settings.tsx";
+import { Register } from "../../pages/Register.tsx";
+import { Chatroom } from "../../pages/Chatroom.tsx";
+import { ProtectedRoute } from "../ProtectedRoute/ProtectedRoute.tsx";
+import { MainLayout } from "../MainLayout/MainLayout.tsx";
+import { Settings } from "../../pages/Settings.tsx";
 
 export const ChatRouter = () => {
   const browserRouter = createBrowserRouter([

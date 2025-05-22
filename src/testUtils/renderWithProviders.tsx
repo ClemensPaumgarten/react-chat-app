@@ -8,7 +8,5 @@ const AllProviders: FunctionComponent<PropsWithChildren> = ({ children }) => (
   </QueryClientProvider>
 );
 
-const renderWithProviders = (ui: React.ReactElement, options?: any) =>
+export const renderWithProviders = (ui: React.ReactElement, options?: any) =>
   render(ui, { wrapper: AllProviders, ...options });
-
-export { renderWithProviders };

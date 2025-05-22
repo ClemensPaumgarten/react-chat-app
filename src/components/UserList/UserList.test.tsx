@@ -15,7 +15,11 @@ describe("UserList Component", () => {
     const openChatroomMock = vi.fn();
 
     render(
-      <UserList activeUsers={mockUsers} openChatroom={openChatroomMock} />,
+      <UserList
+        activeUsers={mockUsers}
+        openChatroom={openChatroomMock}
+        loading={false}
+      />,
     );
 
     // Assert that each user is rendered
@@ -29,7 +33,11 @@ describe("UserList Component", () => {
     const openChatroomMock = vi.fn();
 
     render(
-      <UserList activeUsers={mockUsers} openChatroom={openChatroomMock} />,
+      <UserList
+        activeUsers={mockUsers}
+        openChatroom={openChatroomMock}
+        loading={false}
+      />,
     );
 
     // Simulate click on each user

@@ -1,6 +1,6 @@
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ChatRouter } from "./ChatRouter.tsx";
+import { ChatRouter } from "./components/ChatRouter/ChatRouter.tsx";
 
 const queryClient = new QueryClient();
 
