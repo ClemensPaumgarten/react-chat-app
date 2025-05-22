@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const GET_CHAT_ROOM = "CURRENT_CHATROOM";
 export const useGetChatroom = (
-  chatroomId: string | null,
+  chatroomId: string | undefined,
   refetchInterval: number | false = false,
 ) =>
   useQuery({
@@ -64,7 +64,8 @@ export const usePostMessage = () => {
   return useMutation<
     ChatRoom,
     unknown,
-    { chatRoomId: ChatRoom["id"]; text: string; authorId: string }
+    { chatRoomId: ChatRoom["id"]; text: string; authorId: string },
+    ChatRoom
   >({
     mutationFn: async ({ chatRoomId, text, authorId }): Promise<ChatRoom> => {
       const response = await fetch(
@@ -79,6 +80,34 @@ export const usePostMessage = () => {
       );
 
       return handelApiResponse<ChatRoom>(response);
+    },
+    onMutate: async ({ text, authorId }) => {
+      await queryClient.cancelQueries({ queryKey: [GET_CHAT_ROOM] });
+      const previousChatRoom = queryClient.getQueryData<ChatRoom>([
+        GET_CHAT_ROOM,
+      ]);
+
+      if (previousChatRoom) {
+        const optimisticChatRoom = {
+          ...previousChatRoom,
+          messages: [
+            ...previousChatRoom.messages,
+            {
+              id: `temp-${Date.now()}`,
+              text,
+              authorId,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        };
+        queryClient.setQueryData([GET_CHAT_ROOM], optimisticChatRoom);
+      }
+      return previousChatRoom;
+    },
+    onError: (_, _1, context) => {
+      if (context) {
+        queryClient.setQueryData([GET_CHAT_ROOM], context);
+      }
     },
     onSuccess: () => {
       return queryClient.invalidateQueries({

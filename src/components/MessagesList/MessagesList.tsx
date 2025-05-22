@@ -1,16 +1,16 @@
 import { FunctionComponent } from "react";
-import { ChatRoom, User } from "../../models/user.ts";
+import { ChatRoom } from "../../models/user.ts";
 import { Box, Typography } from "@mui/material";
+import { useAuth } from "../../store/useAuth.tsx";
 
 type MessagesListProps = {
   messages: ChatRoom["messages"];
-  loggedInUser: User;
 };
 
 export const MessagesList: FunctionComponent<MessagesListProps> = ({
   messages,
-  loggedInUser,
 }) => {
+  const { user: loggedInUser } = useAuth();
   return (
     <Box
       sx={{

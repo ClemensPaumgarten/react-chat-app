@@ -1,44 +1,15 @@
-import { FunctionComponent, useMemo } from "react";
+import { FunctionComponent } from "react";
 import { AppBar, Box, Paper, Toolbar, Typography } from "@mui/material";
-import { useAuth } from "../../store/useAuth.tsx";
-import { useGetChatroom, usePostMessage } from "../../api/chatroom.ts";
 import { MessagesList } from "../MessagesList/MessagesList.tsx";
 import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
 import { ChatRoom } from "../../models/user.ts";
 
 type ChatProps = {
-  chatRoom: ChatRoom;
+  recipient: ChatRoom["users"];
+  messages: ChatRoom["messages"];
 };
 
-export const Chat: FunctionComponent<ChatProps> = ({ chatRoom }) => {
-  const { data: nextChatRoom = null } = useGetChatroom(chatRoom.id, 5000);
-  const { user } = useAuth();
-  const { mutateAsync } = usePostMessage();
-  const currentChatRoom = useMemo(() => {
-    if (nextChatRoom?.id === chatRoom.id) {
-      return nextChatRoom;
-    }
-
-    return chatRoom;
-  }, [nextChatRoom, chatRoom]);
-
-  const handleSendMessage = async (newMessage: string) => {
-    if (!currentChatRoom || !user) return;
-
-    try {
-      await mutateAsync({
-        chatRoomId: currentChatRoom.id,
-        text: newMessage,
-        authorId: user.id,
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const recipient =
-    currentChatRoom?.users.filter((u) => u.id !== user?.id) || [];
-
+export const Chat: FunctionComponent<ChatProps> = ({ recipient, messages }) => {
   return (
     <Box
       sx={{
@@ -70,14 +41,9 @@ export const Chat: FunctionComponent<ChatProps> = ({ chatRoom }) => {
         }}
         elevation={1}
       >
-        {user && (
-          <MessagesList
-            messages={currentChatRoom?.messages || []}
-            loggedInUser={user}
-          />
-        )}
+        <MessagesList messages={messages} />
 
-        <ChatSendBarContainer onSend={handleSendMessage} />
+        <ChatSendBarContainer />
       </Paper>
     </Box>
   );
