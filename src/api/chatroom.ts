@@ -88,15 +88,14 @@ export const usePostMessage = () => {
       ]);
 
       if (previousChatRoom) {
-        const optimisticChatRoom = {
+        const optimisticChatRoom: ChatRoom = {
           ...previousChatRoom,
           messages: [
             ...previousChatRoom.messages,
             {
               id: `temp-${Date.now()}`,
               text,
-              authorId,
-              createdAt: new Date().toISOString(),
+              author: authorId,
             },
           ],
         };
