@@ -4,6 +4,8 @@ import { Chat } from "./Chat.tsx";
 import { Box, Typography } from "@mui/material";
 import { useGetChatroom } from "../../api/chatroom.ts";
 import { useAuth } from "../../store/useAuth.tsx";
+import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
+import { MessagesList } from "../MessagesList/MessagesList.tsx";
 
 export const ChatContainer: FunctionComponent = () => {
   const { currentChatRoom } = useChatStore();
@@ -14,7 +16,12 @@ export const ChatContainer: FunctionComponent = () => {
     currentChatRoom?.users.filter((u) => u.id !== user?.id) || [];
 
   return chatRoom ? (
-    <Chat messages={chatRoom.messages} recipient={recipient} />
+    <Chat
+      messages={chatRoom.messages}
+      recipient={recipient}
+      MessagesList={<MessagesList messages={chatRoom.messages} />}
+      SendComponent={<ChatSendBarContainer />}
+    />
   ) : (
     <Box
       sx={{

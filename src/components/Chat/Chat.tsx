@@ -1,15 +1,19 @@
 import { FunctionComponent } from "react";
 import { AppBar, Box, Paper, Toolbar, Typography } from "@mui/material";
-import { MessagesList } from "../MessagesList/MessagesList.tsx";
-import { ChatSendBarContainer } from "../ChatSendBar/ChatSendBarContainer.tsx";
 import { ChatRoom } from "../../models/user.ts";
 
 type ChatProps = {
   recipient: ChatRoom["users"];
   messages: ChatRoom["messages"];
+  SendComponent: React.ReactNode;
+  MessagesList: React.ReactNode;
 };
 
-export const Chat: FunctionComponent<ChatProps> = ({ recipient, messages }) => {
+export const Chat: FunctionComponent<ChatProps> = ({
+  recipient,
+  SendComponent,
+  MessagesList,
+}) => {
   return (
     <Box
       sx={{
@@ -17,15 +21,16 @@ export const Chat: FunctionComponent<ChatProps> = ({ recipient, messages }) => {
         position: "relative",
         flexDirection: "column",
         flexGrow: "1",
-        height: "100vh",
+        height: "calc(100vh - 64px)",
       }}
     >
       <AppBar
-        sx={{
-          backgroundColor: "#6a5757",
-        }}
         elevation={2}
         position="static"
+        color="inherit"
+        sx={{
+          borderBottom: "1px solid #e0e0e0",
+        }}
       >
         <Toolbar>
           <Typography variant="h6">
@@ -41,9 +46,9 @@ export const Chat: FunctionComponent<ChatProps> = ({ recipient, messages }) => {
         }}
         elevation={1}
       >
-        <MessagesList messages={messages} />
+        {MessagesList}
 
-        <ChatSendBarContainer />
+        {SendComponent}
       </Paper>
     </Box>
   );

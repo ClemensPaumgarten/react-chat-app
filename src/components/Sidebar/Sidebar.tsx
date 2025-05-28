@@ -8,7 +8,7 @@ export const Sidebar: FunctionComponent = () => {
     <Paper
       sx={{
         width: "450px",
-        height: "100vh",
+        height: "calc(100vh - 64px)",
         overflowY: "scroll",
       }}
     >

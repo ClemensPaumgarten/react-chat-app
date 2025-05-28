@@ -15,7 +15,7 @@ export const useGetChatroom = (
         return null;
       }
 
-      const response = await fetch(`${API_URL}/chatroom/${chatroomId}`);
+      const response = await fetch(`${API_URL}/chatrooms/${chatroomId}`);
       return handelApiResponse<ChatRoom>(response);
     },
     refetchInterval: refetchInterval,
@@ -29,7 +29,7 @@ export const useGetOpenChatrooms = (user: User | null) =>
     queryKey: [GET_OPEN_CHAT_ROOM_QUERY],
     queryFn: async () => {
       if (user) {
-        const response = await fetch(`${API_URL}/chatroom/user/${user.id}`);
+        const response = await fetch(`${API_URL}/chatrooms/user/${user.id}`);
         return handelApiResponse<ChatRoom[]>(response);
       }
       return [];
@@ -41,7 +41,7 @@ export const usePostChatroom = () => {
   const queryClient = useQueryClient();
   return useMutation<ChatRoom, unknown, User["id"][]>({
     mutationFn: async (userIds: User["id"][]) => {
-      const response = await fetch(`${API_URL}/chatroom/chatroom`, {
+      const response = await fetch(`${API_URL}/chatrooms`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export const usePostMessage = () => {
   >({
     mutationFn: async ({ chatRoomId, text, authorId }): Promise<ChatRoom> => {
       const response = await fetch(
-        `${API_URL}/chatroom/${chatRoomId}/message`,
+        `${API_URL}/chatrooms/${chatRoomId}/message`,
         {
           method: "POST",
           headers: {

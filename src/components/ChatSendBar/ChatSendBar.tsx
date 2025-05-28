@@ -12,6 +12,8 @@ export const ChatSendBar = forwardRef<HTMLInputElement, ChatSendBarProps>(
     return (
       <Box
         sx={{
+          display: "flex",
+          alignItems: "center",
           padding: "20px",
         }}
       >
@@ -27,10 +29,12 @@ export const ChatSendBar = forwardRef<HTMLInputElement, ChatSendBarProps>(
           autoFocus
         />
         <Button
+          sx={{
+            mx: 2,
+          }}
           variant="contained"
           color="secondary"
           onClick={onSend}
-          style={{ marginTop: "10px" }}
         >
           Send
         </Button>

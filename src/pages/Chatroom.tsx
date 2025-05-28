@@ -8,7 +8,7 @@ export const Chatroom: Page = () => {
     <Box
       sx={{
         width: "100vw",
-        height: "100vh",
+        height: "calc(100vh - 64px)",
         display: "flex",
       }}
     >
